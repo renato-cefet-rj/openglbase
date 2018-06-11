@@ -26,7 +26,10 @@
 *.a
 *.lib
 
+.DS_STORE
+
 # Executables
 *.exe
 *.out
 *.app
+Application
