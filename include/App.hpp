@@ -5,7 +5,6 @@
 #include <OpenGL/gl3.h>
 #include <SDL2/SDL.h>
 #else
-// Teste
 #endif
 
 #include <glm/glm.hpp>
