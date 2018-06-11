@@ -3,9 +3,11 @@
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
-#else
+#endif
+
+#ifdef __LINUX__
 #define USING_GLEW
-#include <GL/glew.h>
+#include <GL/gl.h>
 #endif
 
 #include <SDL2/SDL.h>

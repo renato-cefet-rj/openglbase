@@ -10,7 +10,8 @@ FLAGS_ALL = -framework SDL2 -framework OPENGL
 endif
 
 ifeq ($(UNAME), Linux)
-FLAGS_ALL = -lSDL2 -lGL -lGLEW
+CFLAGS += -D__LINUX__ -DGL_GLEXT_PROTOTYPES -DGL3_PROTOTYPES=1
+FLAGS_ALL = -lGL -lGLEW `sdl2-config --cflags --libs`
 endif
 
 all: $(OBJECTS)
@@ -19,11 +20,11 @@ all: $(OBJECTS)
 	$(CC) -g -O0 -o $(EXEC) $^ $(FLAGS_ALL)
 
 $(OBJECTS): obj/%.o : src/%.cpp
-	$(CC) -c $< -o $@ $(CFLAGS) -g -O0
+	$(CC) -c $< -o $@ $(CFLAGS)
 	@echo "Compiled "$<" successfully!"
 
 clean:
-	rm -rf obj/*
+	rm -rf obj/*.o
 	rm -rf Application
 
 run: all
