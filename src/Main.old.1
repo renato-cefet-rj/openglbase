@@ -1,0 +1,62 @@
+#include <App.hpp>
+#include <Shader.hpp>
+
+App *app = AppNull;
+Shader *triangulo = ShaderNull;
+GLuint vao = 0;
+GLuint vbo = 0;
+
+float points[] = 
+{
+   0.0f,  0.5f,  1.0f,
+   0.5f, -0.5f,  1.0f,
+  -0.5f, -0.5f,  1.0f
+};
+
+void init()
+{
+	app = new App();
+	triangulo = new Shader("triangulo");
+	triangulo->setMVP(glm::rotate(glm::mat4(1.0f),45.0f,glm::vec3(0,0,1)));
+	glGenBuffers(1, &vbo);
+	glBindBuffer(GL_ARRAY_BUFFER, vbo);
+	glBufferData(GL_ARRAY_BUFFER, 9 * sizeof(float), points, GL_STATIC_DRAW);
+	glGenVertexArrays(1, &vao);
+	glBindVertexArray(vao);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, NULL);
+	glEnable(GL_PROGRAM_POINT_SIZE);
+}
+
+float angle = 0;
+
+void draw()
+{
+	triangulo->setMVP(glm::rotate(glm::mat4(1.0f),angle+=0.01,glm::vec3(0,0,1)));
+	GLfloat color[] = { 0.3f, 0.6f, 0.3f, 1.0f };
+	glClearBufferfv(GL_COLOR, 0, color);
+	glDrawArrays(GL_POINTS, 0, 3);
+	glDrawArrays(GL_LINE_LOOP, 0, 3);
+}
+
+void end()
+{
+	glDeleteBuffers(1,&vbo);
+	glDeleteVertexArrays(1,&vao);
+	delete triangulo;
+	delete app;	
+}
+
+struct Vertex
+{
+	float x, y, z;
+	Vertex(float x=0.0f, float y=0.0f, float z=0.0f) : x(x), y(y), z(z) {}
+};
+
+int main(int argc, char**argv)
+{
+	init();
+	app->run(draw);
+	end();
+	return 0;
+}
