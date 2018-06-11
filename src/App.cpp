@@ -1,4 +1,5 @@
 #include <App.hpp>
+#include <chrono>
 
 App::App(const char* title, int width, int height, bool oldOpenGL )
 {
@@ -53,15 +54,32 @@ App::~App()
 	SDL_Quit();
 }
 
+
+Uint32 timerCallback(Uint32 interval, void *param)
+{
+    SDL_Event event;
+    SDL_UserEvent userevent;
+    userevent.type = SDL_USEREVENT;
+    userevent.code = 0;
+    userevent.data1 = NULL;
+    userevent.data2 = NULL;
+    event.type = SDL_USEREVENT;
+    event.user = userevent;
+    SDL_PushEvent(&event);
+    return interval;
+}
+
 bool App::run(DrawCallback callback)
 {
 	SDL_Event event;
+	SDL_TimerID timerId;
 	int quit = 0;
 
 	if(!this->canRun)
 	{
 		return false;
 	}
+	timerId = SDL_AddTimer(40,timerCallback,NULL);
 
 	while (!quit)
 	{
@@ -71,12 +89,13 @@ bool App::run(DrawCallback callback)
 			{
 				quit = 1;
 			}
-		}
-		if(!quit)
-		{
-			callback();
-			SDL_GL_SwapWindow(this->window);
+			else if(event.type == SDL_USEREVENT)
+			{
+				callback();
+				SDL_GL_SwapWindow(this->window);
+			}
 		}
 	}
+	SDL_RemoveTimer(timerId);
 	return true;
 }
