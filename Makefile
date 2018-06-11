@@ -11,7 +11,7 @@ endif
 
 ifeq ($(UNAME), Linux)
 CFLAGS += -D__LINUX__ -DGL_GLEXT_PROTOTYPES -DGL3_PROTOTYPES=1
-FLAGS_ALL = -lGL -lGLEW `sdl2-config --cflags --libs`
+FLAGS_ALL = -lGL `sdl2-config --cflags --libs`
 endif
 
 all: $(OBJECTS)
