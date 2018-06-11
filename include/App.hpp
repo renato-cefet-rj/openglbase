@@ -3,9 +3,12 @@
 
 #ifdef __APPLE__
 #include <OpenGL/gl3.h>
-#include <SDL2/SDL.h>
 #else
+#define USING_GLEW
+#include <GL/glew.h>
 #endif
+
+#include <SDL2/SDL.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>

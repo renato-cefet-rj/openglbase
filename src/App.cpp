@@ -34,6 +34,13 @@ App::App(const char* title, int width, int height, bool oldOpenGL )
 		SDL_Log("Unable to create OPENGL context: %s", SDL_GetError());
 		return;
 	}
+
+#	ifdef USING_GLEW
+		printf("Usando GLEW\n");
+		glewExperimental = GL_TRUE;
+  		glewInit();
+#	endif
+
 	glEnable(GL_DEPTH_TEST);
 	SDL_ShowWindow(window);
 	this->canRun = true;
