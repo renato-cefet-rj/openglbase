@@ -96,13 +96,13 @@ GLuint Shader::createProgram(const char* programName)
 	GLint linked = 0;
 	GLint length = 0;
 
-	sprintf(buffer,"shader/%s.vs",programName);
+	sprintf(buffer,"shader/%s.vs.glsl",programName);
 	vertexShaderId = this->compileShaderFromFile(buffer, GL_VERTEX_SHADER);
 	if(!vertexShaderId)
 	{
 		return 0;
 	}
-	sprintf(buffer,"shader/%s.fs",programName);
+	sprintf(buffer,"shader/%s.fs.glsl",programName);
 	fragmentShaderId = this->compileShaderFromFile(buffer, GL_FRAGMENT_SHADER);
 	if(!fragmentShaderId)
 	{
