@@ -29,7 +29,7 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
     }
 
     this->context = SDL_GL_CreateContext(window);
-    if(!context)
+	if(!context)
 	{
 		SDL_Log("Unable to create OPENGL context: %s", SDL_GetError());
 		return;
