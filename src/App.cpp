@@ -23,10 +23,10 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 
 	this->window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_OPENGL);
 	if(!this->window)
-    {
+	{
 		SDL_Log("Unable to create SDL window: %s", SDL_GetError());
 		return;
-    }
+	}
 
 	this->context = SDL_GL_CreateContext(window);
 	if(!context)
