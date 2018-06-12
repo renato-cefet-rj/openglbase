@@ -17,7 +17,7 @@ endif
 all: $(OBJECTS)
 	@echo "Flags: "$(FLAGS_ALL)
 	@echo "Unix Name: "$(UNAME)
-	$(CC) -g -O0 -o $(EXEC) $^ $(FLAGS_ALL)
+	$(CC) -o $(EXEC) $^ $(FLAGS_ALL)
 
 $(OBJECTS): obj/%.o : src/%.cpp
 	$(CC) -c $< -o $@ $(CFLAGS)
