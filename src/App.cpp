@@ -1,30 +1,30 @@
 #include <App.hpp>
 
-App::App(const char* title, int width, int height, bool oldOpenGL )
+App::App(const char* title, int width, int height, bool oldOpenGL)
 {
 	this->window = (SDL_Window*) 0;
 	this->canRun = false;
 	if (SDL_Init(SDL_INIT_VIDEO) != 0) 
 	{		
-        SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
-        return;
-    }
+		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
+		return;
+	}
 
-    if(oldOpenGL)
-    {
+	if(oldOpenGL)
+	{
 		//OpenGL compatibility profile - deprecated functions are allowed
 		SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_COMPATIBILITY);
-    }
-    else
-    {
+	}
+	else
+	{
 		//OpenGL core profile - deprecated functions are disabled
 		SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    }
+	}
 
     this->window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_OPENGL);
     if(!this->window)
     {
-        SDL_Log("Unable to create SDL window: %s", SDL_GetError());
+		SDL_Log("Unable to create SDL window: %s", SDL_GetError());
 		return;
     }
 
@@ -50,16 +50,16 @@ App::~App()
 
 Uint32 timerCallback(Uint32 interval, void *param)
 {
-    SDL_Event event;
-    SDL_UserEvent userevent;
-    userevent.type = SDL_USEREVENT;
-    userevent.code = 0;
-    userevent.data1 = NULL;
-    userevent.data2 = NULL;
-    event.type = SDL_USEREVENT;
-    event.user = userevent;
-    SDL_PushEvent(&event);
-    return interval;
+	SDL_Event event;
+	SDL_UserEvent userevent;
+	userevent.type = SDL_USEREVENT;
+	userevent.code = 0;
+	userevent.data1 = NULL;
+	userevent.data2 = NULL;
+	event.type = SDL_USEREVENT;
+	event.user = userevent;
+	SDL_PushEvent(&event);
+	return interval;
 }
 
 bool App::run(DrawCallback callback)
@@ -81,6 +81,7 @@ bool App::run(DrawCallback callback)
 			if (event.type == SDL_QUIT)
 			{
 				quit = 1;
+				break;
 			}
 			else if(event.type == SDL_USEREVENT)
 			{
@@ -92,3 +93,4 @@ bool App::run(DrawCallback callback)
 	SDL_RemoveTimer(timerId);
 	return true;
 }
+

@@ -6,7 +6,6 @@
 #endif
 
 #ifdef __LINUX__
-#define USING_GLEW
 #include <GL/gl.h>
 #endif
 
