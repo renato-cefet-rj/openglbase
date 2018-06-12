@@ -21,8 +21,8 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 		SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	}
 
-    this->window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_OPENGL);
-    if(!this->window)
+	this->window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_OPENGL);
+	if(!this->window)
     {
 		SDL_Log("Unable to create SDL window: %s", SDL_GetError());
 		return;
