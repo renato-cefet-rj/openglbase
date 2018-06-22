@@ -16,19 +16,35 @@
 
 #define AppNull (App*)0
 
-typedef void (*DrawCallback)();
+typedef void (*DrawCallback)(glm::mat4 transform);
 
 class App
 {
 	public:
-		App(const char* title="Application", int width=800, int height=600, bool oldOpenGL=false);
+		App(const char* title="Application", int width=1024, int height=400, bool oldOpenGL=false);
 		virtual ~App();
 		virtual bool run(DrawCallback callback);
 
 	private:
+		virtual void updatePerspectiveAndLookAtMatrix();
+		void perspective(float perspectiveFieldOfView, float perspectiveNear, float perspectiveFar);
+		void lookAt(glm::vec3 lookAtEye, glm::vec3 lookAtCenter, glm::vec3 lookAtUp);
+
 		SDL_Window *window;
 		SDL_GLContext context;
 		bool canRun;
+		glm::mat4 vp;
+
+		/* LookAt Attributes */
+		glm::vec3 lookAtEye;
+		glm::vec3 lookAtCenter;
+		glm::vec3 lookAtUp;
+
+		/* Perspective Attributes */
+		float perspectiveFieldOfView;
+		float perspectiveAspect;
+		float perspectiveNear;
+		float perspectiveFar;
 };
 
 #endif

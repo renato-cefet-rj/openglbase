@@ -21,7 +21,7 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 		SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	}
 
-	this->window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_OPENGL);
+	this->window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if(!this->window)
 	{
 		SDL_Log("Unable to create SDL window: %s", SDL_GetError());
@@ -35,6 +35,9 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 		return;
 	}
 
+	this->perspectiveAspect = (1.0f*width)/height;
+	this->lookAt(glm::vec3(0.0f,0.0f,10.0f),glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
+	this->perspective(glm::radians(45.0f),0.1f,100.0f);
 	glEnable(GL_DEPTH_TEST);
 	SDL_ShowWindow(window);
 	this->canRun = true;
@@ -62,6 +65,29 @@ Uint32 timerCallback(Uint32 interval, void *param)
 	return interval;
 }
 
+void App::updatePerspectiveAndLookAtMatrix()
+{
+	glm::mat4 projection = glm::perspective(this->perspectiveFieldOfView,this->perspectiveAspect,this->perspectiveNear,this->perspectiveFar);
+	glm::mat4 view = glm::lookAt(this->lookAtEye,this->lookAtCenter,this->lookAtUp);
+	this->vp = projection * view;
+}
+
+void App::perspective(float perspectiveFieldOfView, float perspectiveNear, float perspectiveFar)
+{
+	this->perspectiveFieldOfView = perspectiveFieldOfView;
+	this->perspectiveNear = perspectiveNear;
+	this->perspectiveFar = perspectiveFar;
+	this->updatePerspectiveAndLookAtMatrix();
+}
+
+void App::lookAt(glm::vec3 lookAtEye, glm::vec3 lookAtCenter, glm::vec3 lookAtUp)
+{
+	this->lookAtEye = lookAtEye;
+	this->lookAtCenter = lookAtCenter;
+	this->lookAtUp = lookAtUp;
+	this->updatePerspectiveAndLookAtMatrix();
+}
+
 bool App::run(DrawCallback callback)
 {
 	SDL_Event event;
@@ -85,8 +111,20 @@ bool App::run(DrawCallback callback)
 			}
 			else if(event.type == SDL_USEREVENT)
 			{
-				callback();
+				callback(this->vp);
 				SDL_GL_SwapWindow(this->window);
+			}
+
+			else if (event.type == SDL_WINDOWEVENT) 
+			{
+				if(event.window.event == SDL_WINDOWEVENT_RESIZED)
+				{
+					int width = event.window.data1;
+					int height = event.window.data2;
+					glViewport(0,0,(GLsizei)width,(GLsizei)height);
+					this->perspectiveAspect = ((1.0f)*width)/height;
+					this->updatePerspectiveAndLookAtMatrix();
+				}
 			}
 		}
 	}
