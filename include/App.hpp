@@ -24,6 +24,7 @@ class App
 		App(const char* title="Application", int width=1024, int height=400, bool oldOpenGL=false);
 		virtual ~App();
 		virtual bool run(DrawCallback callback);
+		virtual void background(float r, float g, float b, float a = 1.0f);
 
 	private:
 		virtual void updatePerspectiveAndLookAtMatrix();
@@ -45,6 +46,8 @@ class App
 		float perspectiveAspect;
 		float perspectiveNear;
 		float perspectiveFar;
+
+		glm::vec4 bgcolor;
 };
 
 #endif

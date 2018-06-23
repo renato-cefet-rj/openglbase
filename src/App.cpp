@@ -39,8 +39,12 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 	this->lookAt(glm::vec3(0.0f,0.0f,10.0f),glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
 	this->perspective(glm::radians(45.0f),0.1f,100.0f);
 	glEnable(GL_DEPTH_TEST);
-	SDL_ShowWindow(window);
 	this->canRun = true;
+
+	this->bgcolor.r = 0.3f;
+	this->bgcolor.g = 0.6f;
+	this->bgcolor.b = 0.3f;
+	this->bgcolor.a = 1.0f;
 }
 
 App::~App()
@@ -49,7 +53,6 @@ App::~App()
 	SDL_DestroyWindow(this->window);
 	SDL_Quit();
 }
-
 
 Uint32 timerCallback(Uint32 interval, void *param)
 {
@@ -90,6 +93,7 @@ void App::lookAt(glm::vec3 lookAtEye, glm::vec3 lookAtCenter, glm::vec3 lookAtUp
 
 bool App::run(DrawCallback callback)
 {
+	GLfloat depth[] = { 1.0 };
 	SDL_Event event;
 	SDL_TimerID timerId;
 	int quit = 0;
@@ -109,8 +113,11 @@ bool App::run(DrawCallback callback)
 				quit = 1;
 				break;
 			}
+
 			else if(event.type == SDL_USEREVENT)
 			{
+				glClearBufferfv(GL_COLOR, 0, &this->bgcolor[0]);
+				glClearBufferfv(GL_DEPTH, 0, depth);
 				callback(this->vp);
 				SDL_GL_SwapWindow(this->window);
 			}
@@ -126,9 +133,45 @@ bool App::run(DrawCallback callback)
 					this->updatePerspectiveAndLookAtMatrix();
 				}
 			}
+
+			else if( event.type == SDL_KEYDOWN ) 
+			{ 
+				if(event.key.keysym.sym == SDLK_UP)
+				{
+				}
+				else if(event.key.keysym.sym == SDLK_DOWN)
+				{
+				}
+				else if(event.key.keysym.sym == SDLK_LEFT)
+				{
+				}
+				else if(event.key.keysym.sym == SDLK_RIGHT)
+				{
+				}
+			}
+
+			else if( event.type == SDL_MOUSEMOTION ) 
+			{ 
+				SDL_Log("Mouse Position %dx%d", event.motion.x, event.motion.y);
+			}
+
+			else if( event.type == SDL_MOUSEBUTTONDOWN ) 
+			{ 
+				if(event.button.button == SDL_BUTTON_LEFT)
+				{
+					SDL_Log("Left Button clicked");
+				}
+			}
 		}
 	}
 	SDL_RemoveTimer(timerId);
 	return true;
 }
 
+void App::background(float r, float g, float b, float a)
+{
+	this->bgcolor.r = r;
+	this->bgcolor.g = g;
+	this->bgcolor.b = b;
+	this->bgcolor.a = a;
+}
