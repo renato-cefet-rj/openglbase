@@ -9,7 +9,15 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return;
 	}
+#if defined( Linux ) && defined( OpenGL33_OK )
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+        SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+        SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+        SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+        SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+#else
 	if(oldOpenGL)
 	{
 		//OpenGL compatibility profile - deprecated functions are allowed
@@ -20,7 +28,7 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 		//OpenGL core profile - deprecated functions are disabled
 		SDL_GL_SetAttribute (SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 	}
-
+#endif
 	this->window = SDL_CreateWindow(title,SDL_WINDOWPOS_CENTERED,SDL_WINDOWPOS_CENTERED,width,height,SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 	if(!this->window)
 	{
@@ -29,6 +37,12 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 	}
 
 	this->context = SDL_GL_CreateContext(window);
+
+#if defined( Linux ) && defined( OpenGL33_OK )
+        glewExperimental = GL_TRUE;
+        glewInit();
+#endif
+
 	if(!context)
 	{
 		SDL_Log("Unable to create OPENGL context: %s", SDL_GetError());
@@ -38,6 +52,15 @@ App::App(const char* title, int width, int height, bool oldOpenGL)
 	this->perspectiveAspect = (1.0f*width)/height;
 	this->lookAt(glm::vec3(0.0f,0.0f,10.0f),glm::vec3(0.0f,0.0f,0.0f),glm::vec3(0.0f,1.0f,0.0f));
 	this->perspective(glm::radians(45.0f),0.1f,100.0f);
+
+#ifdef Linux
+        std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+        std::cout << "GLSL version: " 
+                  << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
+        std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
+        std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+#endif
+
 	glEnable(GL_DEPTH_TEST);
 	this->canRun = true;
 

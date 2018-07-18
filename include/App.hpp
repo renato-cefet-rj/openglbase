@@ -5,7 +5,14 @@
 #include <OpenGL/gl3.h>
 #endif
 
-#ifdef __LINUX__
+#if defined (Linux)
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
+#endif
+#include <iostream>
+#if defined (OpenGL33_OK )
+#include <GL/glew.h>
+#endif
 #include <GL/gl.h>
 #endif
 
@@ -15,6 +22,12 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #define AppNull (App*)0
+
+#if defined( Linux ) && defined (OpenGL33_OK )
+#ifndef GL3_PROTOTYPES
+#define GL3_PROTOTYPES 1
+#endif
+#endif /* Linux and OpenGL33_OK */
 
 typedef void (*DrawCallback)(glm::mat4 transform);
 
