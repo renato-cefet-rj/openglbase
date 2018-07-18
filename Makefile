@@ -10,8 +10,11 @@ FLAGS_ALL = -framework SDL2 -framework OPENGL
 endif
 
 ifeq ($(UNAME), Linux)
-CFLAGS += -D__LINUX__ -DGL_GLEXT_PROTOTYPES -DGL3_PROTOTYPES=1
-FLAGS_ALL = -lGL `sdl2-config --cflags --libs`
+# comment this line if your machine is not OpenGL 3.3. capable (e.g. 3.0 only)
+#OPENGL_CAP = -DOpenGL33_OK
+
+CFLAGS += -DLinux $(OPENGL_CAP)
+FLAGS_ALL = -lGL -lGLEW `sdl2-config --cflags --libs`
 endif
 
 all: $(OBJECTS)
